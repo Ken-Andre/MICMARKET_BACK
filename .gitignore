@@ -3370,3 +3370,5 @@ node_modules/nodemailer/lib/stream-transport/index.js
 node_modules/nodemailer/lib/well-known/index.js
 node_modules/nodemailer/lib/well-known/services.json
 node_modules/nodemailer/lib/xoauth2/index.js
+node_modules/crypto/package.json
+node_modules/crypto/README.md
