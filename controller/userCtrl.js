@@ -19,6 +19,7 @@ const createUser = asyncHandler(async (req, res) => {
     }
     else {
         // User already exists
+        res.sendStatus(409);
         throw new Error('User Already Exists');
     }
 
@@ -27,6 +28,10 @@ const createUser = asyncHandler(async (req, res) => {
 //Login a user
 const loginUserCtrl = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
+    // Checks if all parameters are filled
+    if (!email || !password){
+        res.status(400).json({"message":"The email or password path fields is empty"});
+    }
     console.log(email, password);
     // check if user exists or not
     const findUser = await User.findOne({ email });
@@ -39,6 +44,7 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
         );
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
+            sameSite: 'none',
             maxAge: 72  * 60 * 60 *1000,
         });
         //passwords is correct
@@ -49,9 +55,11 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
             email: findUser?.email,
             mobile: findUser?.mobile,
             token: generateToken(findUser?._id),
+            role: findUser?.role
         });
     } else {
-        throw new Error("Invalid Credentials !");
+        res.status(401).json({"message":"Invalid Credentials"});
+        // throw new Error("Invalid Credentials !");
     }
 });
 
