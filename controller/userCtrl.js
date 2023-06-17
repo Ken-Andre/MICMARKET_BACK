@@ -63,6 +63,77 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
     }
 });
 
+
+// startup login
+
+const loginStartup = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  // check if user exists or not
+  const findStartup = await User.findOne({ email });
+  if (findStartup.role !== "startup") throw new Error("Not Authorised");
+  if (findStartup && (await findStartup.isPasswordMatched(password))) {
+    const refreshToken = await generateRefreshToken(findStartup?._id);
+    const updateuser = await User.findByIdAndUpdate(
+      findStartup.id,
+      {
+        refreshToken: refreshToken,
+      },
+      { new: true }
+    );
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 32 * 60 * 60 * 1000,
+    });
+    res.json({
+      _id: findStartup?._id,
+      firstname: findStartup?.firstname,
+      lastname: findStartup?.lastname,
+      email: findStartup?.email,
+      mobile: findStartup?.mobile,
+      token: generateToken(findStartup?._id),
+    });
+  } else {
+    res.status(401).json({"message":"Forbidden !"});
+        // throw new Error("Invalid Credentials !");
+  }
+});
+
+
+// admin login
+
+const loginAdmin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  // check if user exists or not
+  const findAdmin = await User.findOne({ email });
+  if (findAdmin.role !== "admin") throw new Error("Not Authorised");
+  if (findAdmin && (await findAdmin.isPasswordMatched(password))) {
+    const refreshToken = await generateRefreshToken(findAdmin?._id);
+    const updateuser = await User.findByIdAndUpdate(
+      findAdmin.id,
+      {
+        refreshToken: refreshToken,
+      },
+      { new: true }
+    );
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 48 * 60 * 60 * 1000,
+    });
+    res.json({
+      _id: findAdmin?._id,
+      firstname: findAdmin?.firstname,
+      lastname: findAdmin?.lastname,
+      email: findAdmin?.email,
+      mobile: findAdmin?.mobile,
+      token: generateToken(findAdmin?._id),
+    });
+  } else {
+    res.status(401).json({"message":"Forbidden !"});
+        // throw new Error("Invalid Credentials !");
+  }
+});
+
+
 // Get all Users
 const getallUser = asyncHandler(async (req, res) => {
     try {
@@ -251,7 +322,7 @@ const forgotPasswordToken = asyncHandler(async (req,res) => {
         const resetURL = `Hi, Please follow the link to reset your password. This link will be valid for only 10 minutes now. <a href='http://localhost:5000/api/user/reset-password/${token}'>Click here</a>`;
         const data = {
             to: email,
-            text: "Hey User",
+            text: "Hey Patriots - Dev Kyan !",
             subject: "Forgot Password Link",
             htm: resetURL,
         };
@@ -281,6 +352,8 @@ const resetPassword  =  asyncHandler(async (req, res) => {
 module.exports = {
     createUser,
     loginUserCtrl,
+    loginStartup,
+    loginAdmin,
     getallUser,
     getaUser,
     deleteaUser,

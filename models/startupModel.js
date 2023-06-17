@@ -2,21 +2,26 @@ const mongoose = require('mongoose'); // Erase if already required
 
 // Declare the Schema of the Mongo model
 var startupSchema = new mongoose.Schema({
-    Name: {
+    name: {
         type: String,
         required: true,
         trim: true,
     },
     slug: {
         type: String,
-        required: true,
+        // required: true,
         unique: true,
         lowercase: true,
     },
-    url: {
+    website: {
         type: String,
-        required: false,
+        // required: false,
         unique: true,
+    },
+    address: {
+    	type: String,
+    	required: true,
+    	default: "",
     },
     email: {
         type: String,
@@ -35,12 +40,12 @@ var startupSchema = new mongoose.Schema({
     },
     market_value: {
         type: Number,
-        required: true,
+        // required: true,
     },
     category: {
         type: String,
         required: true,
-        enum: ["Agroalimentaire","Artisanat","Animaux","Magasin & Jardin","Medias","Beaute et Bien-etre","Construction et fabrication","Shopping & Mode","Sante","Sport"],
+        enum: ["Agroalimentaire","Artisanat","Animaux","Magasin & Jardin","Medias","Beaute et Bien-etre","Construction et fabrication","Shopping & Mode","Sante","Sport","Services Technologiques"],
         //ref: "Category",
     },
     subcategory: {
@@ -50,13 +55,14 @@ var startupSchema = new mongoose.Schema({
     },
     quantity: {
         type: Number,
-        required: true,
+        //required: true,
         //select: false,
     },
     sell: {
         type: Number,
         default: 0,
-        //select: false,
+        required: true,
+        // select: false,
     },
     logo_images: {
         type: Array,
@@ -67,9 +73,11 @@ var startupSchema = new mongoose.Schema({
     ratings: [
         {
             star: Number,
-            // postedby: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+            comments: String,
+            postedby: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         }
     ],
+    // In fact startup will be allowable to modify this when there are connected and validated by the MIC Groups it will analyse and verify all things be good before uploading something.
 },
     { timestamps: true }
 );

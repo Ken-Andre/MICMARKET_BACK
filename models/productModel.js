@@ -24,6 +24,7 @@ var productSchema = new mongoose.Schema({
     category: {
         type: String,
         required: true,
+        //enum: ["Agroalimentaire","Artisanat","Animaux","Magasin & Jardin","Medias","Beaute et Bien-etre","Construction et fabrication","Shopping & Mode","Sante","Sport"],
         //ref: "Category",
     },
     brand: {
