@@ -13,6 +13,8 @@ const {
     updatePassword,
     forgotPasswordToken,
     resetPassword,
+    loginStartup,
+    loginAdmin,
 } = require("../controller/userCtrl");
 const {
     authMiddleware,
@@ -24,6 +26,8 @@ router.post("/forgot-password-token", forgotPasswordToken );
 router.put("/reset-password/:token", resetPassword );
 router.put('/password',  authMiddleware, updatePassword);
 router.post("/login", loginUserCtrl);
+router.post("/smooth-login", loginStartup); //before wood login.
+router.post("/admin-login", loginAdmin);
 router.get('/all-users',getallUser);
 router.get('/refresh', handleRefreshToken);
 router.get('/logout',logout);
