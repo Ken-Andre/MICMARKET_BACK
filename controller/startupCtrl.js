@@ -1,7 +1,10 @@
 const Startup = require("../models/startupModel");
+const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
-
+const validateMongoDbId = require("../utils/validateMongodbId");
+const { cloudinaryUploadImg } = require("../utils/cloudinary");
+const fs = require("fs");
 // Create startup function here
 const createStartup = asyncHandler(async (req, res) => {
   try {
@@ -76,12 +79,13 @@ const getAllStartup = asyncHandler(async (req, res) => {
     excludeFields.forEach((el) => delete queryObj[el]);
     //console.log(queryObj, req.query);
     let queryStr = JSON.stringify(queryObj);
+    //Option de tri
     queryStr = queryStr.replace(/\b(gte|lte|gt|lt)\b/g, (match) => `$${match}`);
     //console.log(JSON.parse(queryStr));
 
     let query = Startup.find(JSON.parse(queryStr));
 
-    //Sorting startups
+    //Sorting startups at  defaut by createdAt(old)
     if (req.query.sort) {
       const sortBy = req.query.sort.split(",").join(" ");
       query = query.sort(sortBy);
@@ -115,10 +119,167 @@ const getAllStartup = asyncHandler(async (req, res) => {
   }
 });
 
+// Block the user
+const blockStartup = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongoDbId(id);
+  try {
+    const block = await Startup.findByIdAndUpdate(
+      id,
+      {
+        isVerified: false,
+      },
+      {
+        new: true,
+      }
+    );
+    res.json({
+      message: "Startup Blocked",
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+// Unblock user
+// Preuve d'identité
+// Preuve d'identité d'un utilisateur associé à ce compte
+
+// Informations de contact
+
+// Compte Google My Business vérifié et synchronisé
+
+// Propriété du nom de domaine enregistré
+
+// Nom de domaine vérifié dans la base de données d'un tiers
+
+// Compte bancaire
+
+// Compte bancaire enregistré lors de la procédure d'abonnement
+const unblockStartup = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongoDbId(id);
+  try {
+    const unblock = await Startup.findByIdAndUpdate(
+      id,
+      {
+        isVerified: true,
+      },
+      {
+        new: true,
+      }
+    );
+    res.json({
+      message: "Startup Unblocked",
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+// prodId ici designe l'id de la startup en question a la place de startupId
+// En params on entrera a cette url: "{{base_url}}startup/rating", {"star":0,"prodId":"123456","comment":"your comment"}
+const rating = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const {  star, prodId, comment } = req.body;
+  try {
+    const startup = await Startup.findById(prodId);
+    if (startup.ratings.some((rating) => !rating.postedBy)) {
+      // handle the case where one of the elements in the startup.ratings array doesn't have a postedBy property
+      console.log("Something here  rating haven't the postedBy");
+    }
+
+    let alreadyRated = startup.ratings.find(
+      (userId) => userId.postedby.toString() === _id.toString()
+    );
+    if (alreadyRated) {
+      const updateRating = await Startup.updateOne(
+        {
+          ratings: { $elemMatch: alreadyRated },
+        },
+        {
+          $set: { "ratings.$.star": star, "ratings.$.comment": comment },
+        },
+        {
+          new: true,
+        }
+      );
+      // res.json(updateRating);
+    } else {
+      const rateStartup = await Startup.findByIdAndUpdate(
+        prodId,
+        {
+          $push: {
+            ratings: {
+              star: star,
+              comment: comment,
+              postedby: _id,
+            },
+          },
+        },
+        {
+          new: true,
+        }
+      );
+    }
+    const getallratings = await Startup.findById(prodId);
+    let totalRating = getallratings.ratings.length;
+    let ratingsum = getallratings.ratings
+      .map((item) => item.star)
+      .reduce((prev, curr) => prev + curr, 0);
+    let actualRating = Math.round(ratingsum / totalRating);
+    let finalproduct = await Startup.findByIdAndUpdate(
+      prodId,
+      {
+        totalrating: actualRating,
+      },
+      { new: true }
+    );
+    res.json(finalproduct);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const uploadImages = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongoDbId(id);
+  try {
+    const uploader = (path) => cloudinaryUploadImg(path, "images");
+    const urls = [];
+    const files = req.files;
+    for (const file of files) {
+      const { path } = file;
+      const newpath = await uploader(path);
+      console.log(newpath);
+      urls.push(newpath);
+      console.log(file);
+      fs.unlinkSync(path);
+    }
+    const findStartup = await Startup.findByIdAndUpdate(
+      id,
+      {
+        images: urls.map((file) => {
+          return file;
+        }),
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(findStartup);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
 module.exports = {
   createStartup,
   getaStartup,
   updateStartup,
   getAllStartup,
   deleteStartup,
+  blockStartup,
+  unblockStartup,
+  rating,
+  uploadImages,
 };
