@@ -37,7 +37,7 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
     const findUser = await User.findOne({ email });
     if (findUser && await findUser.isPasswordMatched(password)) {
         const refreshToken = await generateRefreshToken(findUser?._id);
-        const updateaUser = await User.findByIdAndUpdate(
+        const updatedUser = await User.findByIdAndUpdate(
             findUser.id,
             { refreshToken: refreshToken, },
             { new: true }
@@ -161,6 +161,27 @@ const getaUser = asyncHandler(async (req, res) => {
     }
 });
 
+//Save a user address
+const saveAddress = asyncHandler(async (req, res, next) => {
+    const { _id } = req.user;
+    validateMongoDbId(_id);
+
+    try {
+      const updatedUser = await User.findByIdAndUpdate(
+        _id,
+        {
+          address: req?.body?.address,
+        },
+        {
+          new: true,
+        }
+      );
+      res.json(updatedUser);
+    } catch (error) {
+      throw new Error(error);
+    }
+  });
+
 //Delete a single User
 const deleteaUser = asyncHandler(async (req, res) => {
     console.log(req.params);
@@ -271,12 +292,12 @@ const logout = asyncHandler(async (req,res) => {
 });
 
 //Update a User
-const updateaUser = asyncHandler(async (req, res) => {
+const updatedUser = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     validateMongoDbId(_id);
     console.log(req.user);
     try {
-        const updateaUser = await User.findByIdAndUpdate(
+        const updatedUser = await User.findByIdAndUpdate(
             _id,
             {
                 firstname: req?.body?.firstname,
@@ -288,7 +309,7 @@ const updateaUser = asyncHandler(async (req, res) => {
                 new: true,
             }
         );
-        res.json(updateaUser)
+        res.json(updatedUser)
 
     } catch (error) {
         throw new Error(error);
@@ -354,10 +375,11 @@ module.exports = {
     loginUserCtrl,
     loginStartup,
     loginAdmin,
+    saveAddress,
     getallUser,
     getaUser,
     deleteaUser,
-    updateaUser,
+    updatedUser,
     blockUser,
     unblockUser,
     handleRefreshToken,
