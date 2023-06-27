@@ -9,6 +9,7 @@ const {
   unblockStartup,
   rating,
   uploadImages,
+  removeFalseImageIds,
 } = require("../controller/startupCtrl");
 
 const {
@@ -17,20 +18,25 @@ const {
   authMiddleware,
 } = require("../middlewares/authMiddleware");
 const {
+  upload,
   uploadPhoto,
-  productImgResize,
+  //productImgResize,
 } = require("../middlewares/uploadImages");
 const router = express.Router();
 
 router.post("/", createStartup);
-router.put(
+/*router.put(
   "/upload/:id",
   authMiddleware,
   uploadPhoto.array("images", 2),
   productImgResize,
   uploadImages,
-);
+);*/
+// Route pour mettre à jour l'image d'une startup existante
+router.put('/upload/:id', upload.single('image'), uploadPhoto);
 router.get("/:id", getaStartup);
+
+router.get('/removeFalseImageIds',authMiddleware,removeFalseImageIds);
 router.put("/rating", authMiddleware, rating);
 router.put("/:id", authMiddleware, isAuthStartOrAdmin, updateStartup);
 router.delete("/:id", authMiddleware, isAdmin, deleteStartup);

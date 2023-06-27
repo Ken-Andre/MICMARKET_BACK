@@ -58,6 +58,13 @@ var startupSchema = new mongoose.Schema(
         "Sante",
         "Sport",
         "Services Technologiques",
+        "FinTech",
+        "BioTech",
+        "HealthTech",
+        "CleanTech",
+        "AgTech",
+        "BioTech",
+        "EdTech",
       ],
       //ref: "Category",
     },
@@ -66,12 +73,18 @@ var startupSchema = new mongoose.Schema(
       required: true,
       //enum: ["Apple", "Samsung", "Lenovo"],
     },
+    price: {
+      type: Number,
+      required: true,
+      default:0,
+    },
     quantity: {
       type: Number,
-      //required: true,
+      required: true,
+      default:0,
       //select: false,
     },
-    sell: {
+    sell: { //sold
       type: Number,
       default: 0,
       required: true,
@@ -82,14 +95,11 @@ var startupSchema = new mongoose.Schema(
       default: false,
     },
     images: [
-        {
-          public_id: String,
-          url: String,
-        },
-      ],
-    creation_date: {
-      type: Date,
-    },
+  {
+    public_id: String,
+    url: String,
+  },
+],
     ratings: [
       {
         star: Number,
