@@ -1,45 +1,64 @@
-const multer = require("multer");
-const sharp = require("sharp");
-const path = require("path");
-const fs = require("fs");
+const fs = require('fs');
+const path = require('path');
+const multer = require('multer');
+const Startup = require("../models/startupModel");
+const validateMongoDbId = require("../utils/validateMongodbId");
+const cloudinary = require("../utils/cloudinary");
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, path.join(__dirname, "../public/images/"));
-    },
-    filename: function (req, file, cb) {
-      const uniquesuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-      cb(null, file.fieldname + "-" + uniquesuffix + ".jpeg");
-    },
-  });
+  destination: (req, file, cb) => {
+    cb(null, 'public/images');
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
 
-const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image")) {
-    cb(null, true);
-  } else {
-    cb({ message: "Unsupported file type" }, false);
+const upload = multer({ storage });
+
+
+
+const uploadPhoto = async (req, res) => {
+  try {
+    const { id } = req.params;
+    validateMongoDbId(id);
+    
+    const startup = await Startup.findById(id);
+    if (!startup) {
+      throw new Error('Startup not found.');
+    }
+
+    const file = req.file;
+    if (!file) {
+      throw new Error('Please select an image to upload.');
+    }
+
+    const image = {
+  public_id: file.filename,
+  url: `${req.protocol}://${req.get('host')}/images/${file.filename}`
+};
+
+    startup.images.push(image);
+    await startup.save();
+
+    // Remove _id property from image object
+    const updatedImage = {};
+    updatedImage.public_id = image.public_id;
+    updatedImage.url = image.url;
+
+    res.json({
+      success: true,
+      message: 'Image uploaded successfully.',
+      image: updatedImage
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to upload image.'
+    });
   }
 };
 
-const uploadPhoto = multer({
-  storage: storage,
-  fileFilter: multerFilter,
-  limits: { fileSize: 2000000 },
-});
-
-const productImgResize = async (req, res, next) => {
-  if (!req.files) return next();
-  await Promise.all(
-    req.files.map(async (file) => {
-      await sharp(file.path)
-        .resize(300, 300)
-        .toFormat("jpeg")
-        .jpeg({ quality: 90 })
-        .toFile(`public/images/startups/${file.filename}`);
-      fs.unlinkSync(`public/images/startups/${file.filename}`);
-    })
-  );
-  next();
-};
-
-module.exports = { uploadPhoto, productImgResize, };
+module.exports = { uploadPhoto, upload };

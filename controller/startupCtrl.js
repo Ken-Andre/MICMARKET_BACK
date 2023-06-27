@@ -3,7 +3,7 @@ const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
 const validateMongoDbId = require("../utils/validateMongodbId");
-const { cloudinaryUploadImg } = require("../utils/cloudinary");
+const  {cloudinary}  = require("../utils/cloudinary");
 const fs = require("fs");
 // Create startup function here
 const createStartup = asyncHandler(async (req, res) => {
@@ -80,6 +80,10 @@ const getAllStartup = asyncHandler(async (req, res) => {
     //console.log(queryObj, req.query);
     let queryStr = JSON.stringify(queryObj);
     //Option de tri
+    // gte:greater than equal(>=)
+    // lte:less than equal(<=)
+    // gt:greater than (>)
+    // lt:less than (<)
     queryStr = queryStr.replace(/\b(gte|lte|gt|lt)\b/g, (match) => `$${match}`);
     //console.log(JSON.parse(queryStr));
 
@@ -241,37 +245,57 @@ const rating = asyncHandler(async (req, res) => {
   }
 });
 
-const uploadImages = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  validateMongoDbId(id);
+
+// Middleware de téléchargement d'image sur Cloudinary
+const uploadImages = async (req, res, next) => {
   try {
-    const uploader = (path) => cloudinaryUploadImg(path, "images");
-    const urls = [];
-    const files = req.files;
-    for (const file of files) {
-      const { path } = file;
-      const newpath = await uploader(path);
-      console.log(newpath);
-      urls.push(newpath);
-      console.log(file);
-      fs.unlinkSync(path);
+    if (!req.file) {
+      throw new Error('Veuillez sélectionner une image à télécharger.');
     }
-    const findStartup = await Startup.findByIdAndUpdate(
-      id,
+
+    // Télécharger l'image sur Cloudinary
+    const uploadedImage = await cloudinary.uploader.upload(req.file.path);
+
+    // Mettre à jour le modèle de démarrage avec les informations d'image téléchargées
+    const startup = await Startup.findByIdAndUpdate(
+      req.params.id,
       {
-        images: urls.map((file) => {
-          return file;
-        }),
+        $push: {
+          images: {
+            public_id: uploadedImage.public_id,
+            url: uploadedImage.secure_url,
+          },
+        },
       },
-      {
-        new: true,
-      }
+      { new: true }
     );
-    res.json(findStartup);
+
+    // Supprimer l'image téléchargée localement
+    fs.unlinkSync(req.file.path);
+
+    res.json(startup);
   } catch (error) {
-    throw new Error(error);
+    next(error);
+  }
+};
+
+const removeFalseImageIds = asyncHandler(async (req, res) => {
+    try {
+    const startups = await Startup.find({});
+    await Promise.all(startups.map(async (startup) => {
+      startup.images = startup.images.map((image) => {
+        return { ...image, public_id: undefined };
+      });
+      await startup.save();
+    }));
+    console.log("Removed false image IDs from all startups.");
+    return res.json({ success: true, message: "Removed false image IDs from all startups." });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Failed to remove false image IDs from all startups." });
   }
 });
+
 module.exports = {
   createStartup,
   getaStartup,
@@ -282,4 +306,5 @@ module.exports = {
   unblockStartup,
   rating,
   uploadImages,
+  removeFalseImageIds,
 };

@@ -64,6 +64,8 @@ app.use(express.urlencoded({ extended: false }));
 // });
 
 //API Routes
+// Serve static files from the 'public' directory
+app.use(express.static(__dirname + '/public'));
 app.use("/api/user", authRouter);
 app.use("/api/product", productRouter);
 app.use("/api/startup", startupRouter);
