@@ -100,7 +100,7 @@ var startupSchema = new mongoose.Schema(
     url: String,
   },
 ],
-    ratings: [
+ratings: [
       {
         star: Number,
         comment: String,

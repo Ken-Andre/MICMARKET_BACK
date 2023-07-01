@@ -23,9 +23,14 @@ const options = {
 	definition: {
 		openapi: "3.0.0",
 		info: {
-			title: "Library API",
+			title: "MicMarket API",
 			version: "1.0.0",
-			description: "A simple Express Library API",
+			description: "The MicMarket API Docs",
+			contact: {
+				name: "Jaba Space",
+				email: "jabaspace@gmail.com",
+				url:"http://localhost:5000.com"
+			}
 		},
 		servers: [
 			{

@@ -235,7 +235,7 @@ const rating = asyncHandler(async (req, res) => {
     let finalproduct = await Startup.findByIdAndUpdate(
       prodId,
       {
-        totalrating: actualRating,
+        totalratings: actualRating,
       },
       { new: true }
     );
@@ -244,6 +244,40 @@ const rating = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
+//Function for get the median rates stats of a startups
+const getStartupRatingStats = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  try {
+    const startup = await Startup.findById(id, "ratings");
+
+    // Check if startup is empty
+    if (!startup) {
+      res.status(404).json({ message: "No startup found with this id" });
+      return;
+    }
+
+    // Check if startup has any ratings
+    if (startup.ratings.length === 0) {
+      res.status(404).json({ message: "No ratings found for this startup" });
+      return;
+    }
+
+    // Calculate average rating
+    const totalRatings = startup.ratings.length;
+    const totalStars = startup.ratings.reduce((acc, rating) => {
+      return acc + rating.star;
+    }, 0);
+    const averageRating = totalStars / totalRatings;
+
+    res.json({
+      averageRating: averageRating
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 
 
 // Middleware de téléchargement d'image sur Cloudinary
@@ -307,4 +341,5 @@ module.exports = {
   rating,
   uploadImages,
   removeFalseImageIds,
+  getStartupRatingStats,
 };

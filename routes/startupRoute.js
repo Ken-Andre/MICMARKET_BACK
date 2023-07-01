@@ -10,6 +10,7 @@ const {
   rating,
   uploadImages,
   removeFalseImageIds,
+  getStartupRatingStats,
 } = require("../controller/startupCtrl");
 
 const {
@@ -45,5 +46,6 @@ router.delete("/:id", authMiddleware, isAdmin, deleteStartup);
 router.put("/block-startup/:id", authMiddleware, isAdmin, blockStartup); //);
 router.put("/unblock-startup/:id", authMiddleware, isAdmin, unblockStartup); //);
 router.get("/", getAllStartup);
+router.get("/mediumrate/:id", getStartupRatingStats);
 
 module.exports = router;
