@@ -1,0 +1,1118 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "MicMarket API",
+    "version": "1.0.0",
+    "description": "The MicMarket API Docs",
+    "contact": {
+      "name": "Jaba Space",
+      "email": "jabaspace@gmail.com",
+      "url": "http://localhost:5000.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Local development server"
+    }
+  ],
+
+  "paths": {
+    "/user/admin-login": {
+      "post": {
+        "summary": "Admin Login",
+        "description": "Login as admin",
+        "requestBody": {
+          "description": "Request body for a new login",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Email of the admin account"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "Password of the admin account"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Admin"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "user/login": {
+      "post": {
+        "summary": "Login User",
+        "description": "Login as a user",
+        "requestBody": {
+          "description": "Request body for a new login",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Email of the user account"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "Password of the user account"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginUser"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/smooth-login": {
+      "post": {
+        "summary": "Startup Login",
+        "description": "Login as a startup user",
+        "requestBody": {
+          "description": "Request body for a new login",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Email of the startup account"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "Password of the startup account"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartupLogin"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "user/register": {
+      "post": {
+        "summary": "Create User",
+        "description": "Create a new user",
+        "requestBody": {
+          "description": "Request body for creating a new user",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstname": {
+                    "type": "string",
+                    "description": "First name of the new user"
+                  },
+                  "lastname": {
+                    "type": "string",
+                    "description": "Last name of the new user"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "Email of the new user"
+                  },
+                  "mobile": {
+                    "type": "string",
+                    "description": "Mobile number of the new user"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "Password of the new user"
+                  },
+                  "role": {
+                    "type": "string",
+                    "description": "Role of the new user"
+                  }
+                },
+                "required": [
+                  "firstname",
+                  "lastname",
+                  "email",
+                  "password",
+                  "role"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUser"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/forgot-password-token": {
+      "post": {
+        "summary": "Forgot Password Token",
+        "description": "Send an email to user to reset password",
+        "requestBody": {
+          "description": "Request body for sending password reset email",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Email of the user requesting the password reset"
+                  }
+                },
+                "required": ["email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForgotPasswordToken"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/reset-password/{token}": {
+      "put": {
+        "summary": "Reset Password",
+        "description": "Reset user's password using the provided token",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "description": "The password reset token",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body for resetting user password",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string",
+                    "description": "The new password of the user"
+                  }
+                },
+                "required": ["password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetPassword"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/password": {
+      "put": {
+        "summary": "Update Password",
+        "description": "Update user's password",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Request body for updating user password",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string",
+                    "description": "The new password of the user"
+                  }
+                },
+                "required": ["password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdatePassword"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/all-users": {
+      "get": {
+        "summary": "Get All Users",
+        "description": "Get all users in the system",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAllUsers"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/{id}": {
+      "get": {
+        "summary": "Get a User",
+        "description": "Get a single user by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAUser"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/edit-user": {
+      "put": {
+        "summary": "Update a User",
+        "description": "Update the authenticated user's details",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Request body for updating user details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstname": {
+                    "type": "string",
+                    "description": "The updated first name of the user"
+                  },
+                  "lastname": {
+                    "type": "string",
+                    "description": "The updated last name of the user"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "The updated email of the user"
+                  },
+                  "mobile": {
+                    "type": "string",
+                    "description": "The updated mobile number of the user"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateUser"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/block-user/{id}": {
+      "put": {
+        "summary": "Block User",
+        "description": "Block a user by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the user to block",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlockUser"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/unblock-user/{id}": {
+      "put": {
+        "summary": "Unblock User",
+        "description": "Unblock a user by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the user to unblock",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnblockUser"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/ratings": {
+      "post": {
+        "summary": "Create a new rating for a startup",
+        "description": "Creates a new rating for a startup and updates the startup's total rating",
+        "requestBody": {
+          "description": "Request body for a new rating",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prodId": {
+                    "type": "string",
+                    "description": "ID of the startup being rated"
+                  },
+                  "star": {
+                    "type": "number",
+                    "description": "Rating given by the user (1-5)"
+                  },
+                  "comment": {
+                    "type": "string",
+                    "description": "Optional comment from the user"
+                  }
+                },
+                "required": ["prodId", "star"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Startup"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Startup not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/ratings/{id}": {
+      "put": {
+        "summary": "Update an existing rating for a startup",
+        "description": "Updates an existing rating for a startup and updates the startup's total rating",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the rating to update",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body for an updated rating",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "star": {
+                    "type": "number",
+                    "description": "Updated rating given by the user (1-5)"
+                  },
+                  "comment": {
+                    "type": "string",
+                    "description": "Optional updated comment from the user"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Startup"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Rating not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+
+  "components": {
+    "schemas": {
+      "Admin": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The ID of the admin user"
+          },
+          "firstname": {
+            "type": "string",
+            "description": "The first name of the admin user"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The last name of the admin user"
+          },
+          "email": {
+            "type": "string",
+            "description": "The email of the admin user"
+          },
+          "mobile": {
+            "type": "string",
+            "description": "The mobile number of the admin user"
+          },
+          "token": {
+            "type": "string",
+            "description": "The authentication token for the admin user"
+          }
+        }
+      },
+      "LoginUser": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The ID of the user"
+          },
+          "firstname": {
+            "type": "string",
+            "description": "The first name of the user"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The last name of the user"
+          },
+          "email": {
+            "type": "string",
+            "description": "The email of the user"
+          },
+          "mobile": {
+            "type": "string",
+            "description": "The mobile number of the user"
+          },
+          "token": {
+            "type": "string",
+            "description": "The authentication token for the user"
+          },
+          "role": {
+            "type": "string",
+            "description": "The role of the user"
+          }
+        }
+      },
+      "StartupLogin": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The ID of the startup user"
+          },
+          "firstname": {
+            "type": "string",
+            "description": "The first name of the startup user"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The last name of the startup user"
+          },
+          "email": {
+            "type": "string",
+            "description": "The email of the startup user"
+          },
+          "mobile": {
+            "type": "string",
+            "description": "The mobile number of the startup user"
+          },
+          "token": {
+            "type": "string",
+            "description": "The authentication token for the startup user"
+          }
+        }
+      },
+      "CreateUser": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The ID of the new user"
+          },
+          "firstname": {
+            "type": "string",
+            "description": "The first name of the new user"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The last name of the new user"
+          },
+          "email": {
+            "type": "string",
+            "description": "The email of the new user"
+          },
+          "mobile": {
+            "type": "string",
+            "description": "The mobile number of the new user"
+          },
+          "role": {
+            "type": "string",
+            "description": "The role of the new user"
+          }
+        }
+      },
+      "ForgotPasswordToken": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "The password reset token"
+          }
+        }
+      },
+      "ResetPassword": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The ID of the user whose password was reset"
+          },
+          "firstname": {
+            "type": "string",
+            "description": "The first name of the user whose password was reset"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The last name of the user whose password was reset"
+          },
+          "email": {
+            "type": "string",
+            "description": "The email of the user whose password was reset"
+          },
+          "mobile": {
+            "type": "string",
+            "description": "The mobile number of the user whose password was reset"
+          },
+          "role": {
+            "type": "string",
+            "description": "The role of the user whose password was reset"
+          }
+        }
+      },
+      "UpdatePassword": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The ID of the user whose password was updated"
+          },
+          "firstname": {
+            "type": "string",
+            "description": "The first name of the user whose password was updated"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The last name of the user whose password was updated"
+          },
+          "email": {
+            "type": "string",
+            "description": "The email of the user whose password was updated"
+          },
+          "mobile": {
+            "type": "string",
+            "description": "The mobile number of the user whose password was updated"
+          },
+          "role": {
+            "type": "string",
+            "description": "The role of the user whose password was updated"
+          }
+        }
+      },
+      "SaveAddress": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The ID of the user whose address was updated"
+          },
+          "firstname": {
+            "type": "string",
+            "description": "The first name of the user whose address was updated"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The last name of the user whose address was updated"
+          },
+          "email": {
+            "type": "string",
+            "description": "The email of the user whose address was updated"
+          },
+          "mobile": {
+            "type": "string",
+            "description": "The mobile number of the user whose address was updated"
+          },
+          "role": {
+            "type": "string",
+            "description": "The role of the user whose address was updated"
+          },
+          "address": {
+            "type": "object",
+            "description": "The updated address of the user"
+          }
+        }
+      },
+      "GetAllUsers": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "description": "The ID of the user"
+            },
+            "firstname": {
+              "type": "string",
+              "description": "The first name of the user"
+            },
+            "lastname": {
+              "type": "string",
+              "description": "The last name of the user"
+            },
+            "email": {
+              "type": "string",
+              "description": "The email of the user"
+            },
+            "mobile": {
+              "type": "string",
+              "description": "The mobile number of the user"
+            },
+            "role": {
+              "type": "string",
+              "description": "The role of the user"
+            }
+          }
+        }
+      },
+      "GetAUser": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The ID of the user"
+          },
+          "firstname": {
+            "type": "string",
+            "description": "The first name of the user"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The last name of the user"
+          },
+          "email": {
+            "type": "string",
+            "description": "The email of the user"
+          },
+          "mobile": {
+            "type": "string",
+            "description": "The mobile number of the user"
+          },
+          "role": {
+            "type": "string",
+            "description": "The role of the user"
+          }
+        }
+      },
+      "UpdateUser": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The ID of the user"
+          },
+          "firstname": {
+            "type": "string",
+            "description": "The updated first name of the user"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "The updated last name of the user"
+          },
+          "email": {
+            "type": "string",
+            "description": "The updated email of the user"
+          },
+          "mobile": {
+            "type": "string",
+            "description": "The updated mobile number of the user"
+          },
+          "role": {
+            "type": "string",
+            "description": "The role of the user"
+          }
+        }
+      },
+      "BlockUser": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "A message indicating that the user has been blocked"
+          }
+        }
+      },
+      "UnblockUser": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "A message indicating that the user has been unblocked"
+          }
+        }
+      },
+      "Startup": {
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "number"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "sell": {
+            "type": "number"
+          },
+          "totalratings": {
+            "type": "string",
+            "description": "The total number of ratings for the startup"
+          },
+          "_id": {
+            "type": "string",
+            "description": "The ID of the startup"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the startup"
+          },
+          "slug": {
+            "type": "string",
+            "description": "The slug of the startup"
+          },
+          "website": {
+            "type": "string",
+            "description": "The website of the startup"
+          },
+          "address": {
+            "type": "string",
+            "description": "The address of the startup"
+          },
+          "category": {
+            "type": "string",
+            "description": "The category of the startup"
+          },
+          "images": {
+            "type": "array",
+            "description": "An array of image URLs for the startup",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ratings": {
+            "type": "array",
+            "description": "An array of ratings for the startup",
+            "items": {
+              "type": "object",
+              "properties": {
+                "star": {
+                  "type": "number",
+                  "description": "The rating given by the user"
+                },
+                "comment": {
+                  "type": "string",
+                  "description": "The comment from the user"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "description": "The date the rating was created"
+                },
+                "_id": {
+                  "type": "string",
+                  "description": "The ID of the rating"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
