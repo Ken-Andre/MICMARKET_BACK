@@ -12,7 +12,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const uniqid = require("uniqid");
 const sendEmail = require("./emailCtrl");
-
+const replaceLocalhostWithIpAddress = require("../utils/getIp");
 //Create a User
 const createUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
@@ -236,6 +236,7 @@ const getUserCart = asyncHandler(async (req, res) => {
   }
 });
 
+//empty the cart
 const emptyCart = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   validateMongoDbId(_id);
@@ -476,7 +477,8 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
   try {
     const token = await user.createPasswordResetToken();
     await user.save();
-    const resetURL = `Hi, Please follow the link to reset your password. This link will be valid for only 10 minutes now. <a href='http://localhost:5000/api/user/reset-password/${token}'>Click here</a>`;
+    const ipAddress = replaceLocalhostWithIpAddress("http://localhost:5000");
+    const resetURL = `Hi, Please follow the link to reset your password. This link will be valid for only 10 minutes now. <a href='${ipAddress}/api/user/reset-password/${token}'>Click here</a>`;
     const data = {
       to: email,
       text: "Hey Patriots - Dev Kyan !",

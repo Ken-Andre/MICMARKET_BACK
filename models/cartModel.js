@@ -10,7 +10,6 @@ var cartSchema = new mongoose.Schema(
           ref: "Startup",
         },
         count: Number,
-        color: String,
         price: Number,
       },
     ],
