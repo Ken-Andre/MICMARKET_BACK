@@ -12,13 +12,13 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5000",
+      "url": "http://localhost:5000/api",
       "description": "Local development server"
     }
   ],
 
   "paths": {
-    "/user/admin-login": {
+    "/admin-login": {
       "post": {
         "summary": "Admin Login",
         "description": "Login as admin",
@@ -70,7 +70,7 @@
         }
       }
     },
-    "user/login": {
+    "login": {
       "post": {
         "summary": "Login User",
         "description": "Login as a user",
@@ -168,7 +168,7 @@
         }
       }
     },
-    "user/register": {
+    "/register": {
       "post": {
         "summary": "Create User",
         "description": "Create a new user",
@@ -446,6 +446,36 @@
             "description": "Internal server error"
           }
         }
+      },
+      "delete": {
+        "summary": "Delete User",
+        "description": "Delete a user with the given ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the user to delete",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteUser"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
       }
     },
     "/edit-user": {
@@ -588,6 +618,137 @@
           },
           "403": {
             "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/refresh": {
+      "get": {
+        "summary": "Handle Refresh Token",
+        "description": "Handle refresh token and generate new access token",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessToken"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/cart": {
+      "get": {
+        "summary": "Get User Cart",
+        "description": "Get the cart of the authenticated user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cart"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/empty-cart": {
+      "delete": {
+        "summary": "Empty Cart",
+        "description": "Empty the cart of the authenticated user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cart"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/cart/cash-order": {
+      "post": {
+        "summary": "Create Order",
+        "description": "Create a new cash order for the authenticated user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "The request body for creating a new order",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "COD": {
+                    "type": "boolean",
+                    "description": "Whether the payment method is Cash on Delivery or not"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "500": {
             "description": "Internal server error"
@@ -1036,6 +1197,154 @@
           "message": {
             "type": "string",
             "description": "A message indicating that the user has been unblocked"
+          }
+        }
+      },
+      "DeleteUser": {
+        "type": "object",
+        "properties": {
+          "deleteaUser": {
+            "type": "object",
+            "description": "The deleted user object"
+          }
+        }
+      },
+      "AccessToken": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "The access token for the user"
+          }
+        }
+      },
+      "Cart": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The ID of the cart"
+          },
+          "orderby": {
+            "type": "string",
+            "description": "The ID of the user who ordered the cart"
+          },
+          "startups": {
+            "type": "array",
+            "description": "The list of startups in the cart",
+            "items": {
+              "type": "object",
+              "properties": {
+                "startup": {
+                  "type": "object",
+                  "description": "The startup object in the cart",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "description": "The ID of the startup"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "The name of the startup"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "The description of the startup"
+                    },
+                    "image": {
+                      "type": "string",
+                      "description": "The image URL of the startup"
+                    }
+                  }
+                },
+                "quantity": {
+                  "type": "number",
+                  "description": "The quantity of the startup in the cart"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Order": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The ID of the order"
+          },
+          "startups": {
+            "type": "array",
+            "description": "The list of startups in the order",
+            "items": {
+              "type": "object",
+              "properties": {
+                "startup": {
+                  "type": "object",
+                  "description": "The startup object in the order",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "description": "The ID of the startup"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "The name of the startup"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "The description of the startup"
+                    },
+                    "image": {
+                      "type": "string",
+                      "description": "The image URL of the startup"
+                    }
+                  }
+                },
+                "quantity": {
+                  "type": "number",
+                  "description": "The quantity of the startup in the order"
+                }
+              }
+            }
+          },
+          "paymentIntent": {
+            "type": "object",
+            "description": "The payment object in the order",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The ID of the payment"
+              },
+              "method": {
+                "type": "string",
+                "description": "The payment method"
+              },
+              "amount": {
+                "type": "number",
+                "description": "The payment amount"
+              },
+              "status": {
+                "type": "string",
+                "description": "The payment status"
+              },
+              "created": {
+                "type": "string",
+                "description": "The payment creation date"
+              },
+              "currency": {
+                "type": "string",
+                "description": "The payment currency"
+              }
+            }
+          },
+          "orderby": {
+            "type": "string",
+            "description": "The ID of the user who ordered the cart"
+          },
+          "orderStatus": {
+            "type": "string",
+            "description": "The status of the order"
           }
         }
       },
