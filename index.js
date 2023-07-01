@@ -42,6 +42,7 @@ const options = {
 };
 
 const specs = swaggerJsDoc(options);
+const swaggerDocument = require("./swagger.json");
 
 app.use(morgan("dev"));
 app.use(bodyParser.json());
@@ -96,7 +97,7 @@ app.use("/api/user", authRouter);
 app.use("/api/product", productRouter);
 app.use("/api/startup", startupRouter);
 
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // Error handling middleware
 app.use(notFound);

@@ -468,6 +468,7 @@ const updatePassword = asyncHandler(async (req, res) => {
   }
 });
 
+// Forgot Password Handler Send mail to user for reset password to the function reset-password
 const forgotPasswordToken = asyncHandler(async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
