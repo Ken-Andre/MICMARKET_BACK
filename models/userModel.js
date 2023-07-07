@@ -42,7 +42,7 @@ var userSchema = new mongoose.Schema({
     address: {
         type: String,
       },
-    whishList: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+    //whishList: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
     refreshToken: {
         type: String,
     },
