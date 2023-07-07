@@ -43,6 +43,9 @@ var startupSchema = new mongoose.Schema(
       type: Number,
       // required: true,
     },
+    creation_date:{
+    type: Date,
+    },
     category: {
       type: String,
       required: true,
@@ -65,6 +68,7 @@ var startupSchema = new mongoose.Schema(
         "AgTech",
         "BioTech",
         "EdTech",
+        "Services aux Entreprises",
       ],
       //ref: "Category",
     },

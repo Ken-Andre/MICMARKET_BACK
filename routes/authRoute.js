@@ -16,6 +16,7 @@ const {
   loginAdmin,
   updatedUser,
   saveAddress,
+  getOverview,
   userCart,
   emptyCart,
   createOrder,
@@ -41,10 +42,12 @@ router.post("/cart/cash-order", authMiddleware, createOrder);
 
 router.get("/cart", authMiddleware, getUserCart);
 router.get("/get-orders", authMiddleware, getOrders);
+router.get("/save-address", authMiddleware, getOverview);
 router.get("/all-users", getallUser);
 router.get("/refresh", handleRefreshToken);
 router.get("/logout", logout);
 router.get("/:id", authMiddleware, isAdmin, getaUser);
+
 
 router.delete("/empty-cart", authMiddleware, emptyCart);
 router.delete("/:id", deleteaUser); // J'ai failli oublier une fois le .delete ca m'a coute cher !

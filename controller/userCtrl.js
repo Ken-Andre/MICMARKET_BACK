@@ -185,6 +185,19 @@ const saveAddress = asyncHandler(async (req, res, next) => {
   }
 });
 
+//Save a user address
+const getOverview = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  validateMongoDbId(_id);
+
+  try {
+    const UserProfile = await User.findById(_id);
+    res.json(UserProfile);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 //Create Cart object
 const userCart = asyncHandler(async (req, res) => {
   const { cart } = req.body;
@@ -514,6 +527,7 @@ module.exports = {
   loginStartup,
   loginAdmin,
   saveAddress,
+  getOverview,
   userCart,
   getUserCart,
   emptyCart,
