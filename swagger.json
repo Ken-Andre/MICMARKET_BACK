@@ -18,7 +18,7 @@
   ],
 
   "paths": {
-    "/admin-login": {
+    "/user/admin-login": {
       "post": {
         "summary": "Admin Login",
         "description": "Login as admin",
@@ -70,7 +70,7 @@
         }
       }
     },
-    "login": {
+    "/user/login": {
       "post": {
         "summary": "Login User",
         "description": "Login as a user",
@@ -122,7 +122,7 @@
         }
       }
     },
-    "/smooth-login": {
+    "/user/smooth-login": {
       "post": {
         "summary": "Startup Login",
         "description": "Login as a startup user",
@@ -168,7 +168,7 @@
         }
       }
     },
-    "/register": {
+    "/user/register": {
       "post": {
         "summary": "Create User",
         "description": "Create a new user",
@@ -236,7 +236,7 @@
         }
       }
     },
-    "/forgot-password-token": {
+    "/user/forgot-password-token": {
       "post": {
         "summary": "Forgot Password Token",
         "description": "Send an email to user to reset password",
@@ -278,7 +278,7 @@
         }
       }
     },
-    "/reset-password/{token}": {
+    "/user/reset-password/{token}": {
       "put": {
         "summary": "Reset Password",
         "description": "Reset user's password using the provided token",
@@ -334,7 +334,7 @@
         }
       }
     },
-    "/password": {
+    "/user/password": {
       "put": {
         "summary": "Update Password",
         "description": "Update user's password",
@@ -384,7 +384,7 @@
         }
       }
     },
-    "/all-users": {
+    "/user/all-users": {
       "get": {
         "summary": "Get All Users",
         "description": "Get all users in the system",
@@ -405,7 +405,7 @@
         }
       }
     },
-    "/{id}": {
+    "/user/{id}": {
       "get": {
         "summary": "Get a User",
         "description": "Get a single user by ID",
@@ -447,7 +447,7 @@
           }
         }
       },
-      "delete": {
+      "/user/delete": {
         "summary": "Delete User",
         "description": "Delete a user with the given ID",
         "parameters": [
@@ -478,7 +478,7 @@
         }
       }
     },
-    "/edit-user": {
+    "/user/edit-user": {
       "put": {
         "summary": "Update a User",
         "description": "Update the authenticated user's details",
@@ -539,7 +539,7 @@
         }
       }
     },
-    "/block-user/{id}": {
+    "/user/block-/user/{id}": {
       "put": {
         "summary": "Block User",
         "description": "Block a user by ID",
@@ -582,7 +582,7 @@
         }
       }
     },
-    "/unblock-user/{id}": {
+    "/user/unblock-/user/{id}": {
       "put": {
         "summary": "Unblock User",
         "description": "Unblock a user by ID",
@@ -625,7 +625,7 @@
         }
       }
     },
-    "/refresh": {
+    "/user/refresh": {
       "get": {
         "summary": "Handle Refresh Token",
         "description": "Handle refresh token and generate new access token",
@@ -649,7 +649,7 @@
         }
       }
     },
-    "/cart": {
+    "/user/cart": {
       "get": {
         "summary": "Get User Cart",
         "description": "Get the cart of the authenticated user",
@@ -707,7 +707,7 @@
         }
       }
     },
-    "/cart/cash-order": {
+    "/user/cart/cash-order": {
       "post": {
         "summary": "Create Order",
         "description": "Create a new cash order for the authenticated user",
@@ -756,7 +756,7 @@
         }
       }
     },
-    "/ratings": {
+    "startup/rating": {
       "post": {
         "summary": "Create a new rating for a startup",
         "description": "Creates a new rating for a startup and updates the startup's total rating",
@@ -809,7 +809,7 @@
         }
       }
     },
-    "/ratings/{id}": {
+    "/rating/{id}": {
       "put": {
         "summary": "Update an existing rating for a startup",
         "description": "Updates an existing rating for a startup and updates the startup's total rating",
