@@ -48,8 +48,9 @@ var startupSchema = new mongoose.Schema(
     },
     category: {
       type: String,
+      //type: mongoose.Schema.Types.ObjectId,
       required: true,
-      enum: [
+      /*enum: [
         "Agroalimentaire",
         "Artisanat",
         "Animaux",
@@ -69,8 +70,8 @@ var startupSchema = new mongoose.Schema(
         "BioTech",
         "EdTech",
         "Services aux Entreprises",
-      ],
-      //ref: "Category",
+      ],*/
+      ref: "Category",
     },
     subcategory: {
       type: String,
