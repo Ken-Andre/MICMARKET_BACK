@@ -1,4 +1,3 @@
-.env
 node_modules/*
 node_modules/.package-lock.json
 node_modules/.bin/color-support
@@ -7792,7 +7791,6 @@ node_modules/xtend/mutable.js
 node_modules/xtend/package.json
 node_modules/xtend/README.md
 node_modules/xtend/test.js
-.env
 node_modules/.bin/js-yaml
 node_modules/.bin/swagger-jsdoc
 node_modules/.bin/z-schema
