@@ -1,4 +1,5 @@
 const express = require("express");
+const rateLimit = require("express-rate-limit");
 const {
   createStartup,
   getaStartup,
@@ -25,6 +26,11 @@ const {
 } = require("../middlewares/uploadImages");
 const router = express.Router();
 
+const uploadLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+});
+
 router.post("/", createStartup);
 /*router.put(
   "/upload/:id",
@@ -34,7 +40,7 @@ router.post("/", createStartup);
   uploadImages,
 );*/
 // Route pour mettre à jour l'image d'une startup existante
-router.put('/upload/:id', upload.single('image'), uploadPhoto);
+router.put('/upload/:id', uploadLimiter, upload.single('image'), uploadPhoto);
 router.get("/:id", getaStartup);
 
 router.get('/removeFalseImageIds',authMiddleware,removeFalseImageIds);
