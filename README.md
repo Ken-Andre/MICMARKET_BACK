@@ -21,7 +21,7 @@ Bienvenue dans l'API **MicMarket**, une solution Node.js/Express pensée pour pr
    ```bash
    npm install
    ```
-2. Copiez le fichier `.env.example` (ou créez un `.env`) et renseignez vos variables d'environnement (MongoDB, JWT, Cloudinary...).
+2. Copiez le fichier `.env.example` en `.env` puis complétez les variables (`MONGODB_URL`, `JWT_SECRET`, `CLOUD_NAME`, `API_KEY`, `SECRET_KEY`, `MAIL_ID`, `MP`).
 3. Lancez le serveur en local :
    ```bash
    npm start
