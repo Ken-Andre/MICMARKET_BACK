@@ -106,6 +106,10 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server is running at PORT  ${PORT} `);
-});
+module.exports = app;
+
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server is running at PORT  ${PORT} `);
+  });
+}
