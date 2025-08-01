@@ -30,6 +30,25 @@ const router = express.Router();
 
 
 
+/**
+ * @swagger
+ * /api/user/register:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     summary: Register a new user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateUser'
+ *     responses:
+ *       200:
+ *         description: User successfully registered
+ *       400:
+ *         description: Invalid input
+ */
 router.post("/register", createUser);
 router.post("/forgot-password-token", forgotPasswordToken);
 router.put("/reset-password/:token", resetPassword);

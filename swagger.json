@@ -7,18 +7,59 @@
     "contact": {
       "name": "Jaba Space",
       "email": "jabaspace@gmail.com",
-      "url": "http://localhost:5000.com"
+      "url": "https://micmarket-back.vercel.app"
     }
   },
   "servers": [
     {
-      "url": "http://localhost:5000/api",
-      "description": "Local development server"
+      "url": "http://localhost:4000",
+      "description": "Development server"
+    },
+    {
+      "url": "https://miniature-space-spoon-xgjj5v7wq562vgp4-4000.app.github.dev",
+      "description": "Staging server"
+    },
+    {
+      "url": "https://micmarket-back.vercel.app",
+      "description": "Production server"
     }
   ],
 
   "paths": {
-    "/user/admin-login": {
+    "/api/health": {
+      "get": {
+        "tags": ["Health Check"],
+        "summary": "Check if the API is working",
+        "description": "Returns a success message if the API is working well.",
+        "responses": {
+          "200": {
+            "description": "API is working well",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "API is working well"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "example": "2025-08-01T12:00:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user/admin-login": {
       "post": {
         "summary": "Admin Login",
         "description": "Login as admin",
@@ -70,7 +111,7 @@
         }
       }
     },
-    "/user/login": {
+    "/api/user/login": {
       "post": {
         "summary": "Login User",
         "description": "Login as a user",
@@ -122,7 +163,7 @@
         }
       }
     },
-    "/user/smooth-login": {
+    "/api/user/smooth-login": {
       "post": {
         "summary": "Startup Login",
         "description": "Login as a startup user",
@@ -168,7 +209,7 @@
         }
       }
     },
-    "/user/register": {
+    "/api/user/register": {
       "post": {
         "summary": "Create User",
         "description": "Create a new user",
@@ -236,7 +277,7 @@
         }
       }
     },
-    "/user/forgot-password-token": {
+    "/api/user/forgot-password-token": {
       "post": {
         "summary": "Forgot Password Token",
         "description": "Send an email to user to reset password",
@@ -278,7 +319,7 @@
         }
       }
     },
-    "/user/reset-password/{token}": {
+    "/api/user/reset-password/{token}": {
       "put": {
         "summary": "Reset Password",
         "description": "Reset user's password using the provided token",
@@ -334,7 +375,7 @@
         }
       }
     },
-    "/user/password": {
+    "/api/user/password": {
       "put": {
         "summary": "Update Password",
         "description": "Update user's password",
@@ -384,7 +425,7 @@
         }
       }
     },
-    "/user/all-users": {
+    "/api/user/all-users": {
       "get": {
         "summary": "Get All Users",
         "description": "Get all users in the system",
@@ -405,7 +446,7 @@
         }
       }
     },
-    "/user/{id}": {
+    "/api/user/{id}": {
       "get": {
         "summary": "Get a User",
         "description": "Get a single user by ID",
@@ -478,7 +519,7 @@
         }
       }
     },
-    "/user/edit-user": {
+    "/api/user/edit-user": {
       "put": {
         "summary": "Update a User",
         "description": "Update the authenticated user's details",
@@ -539,7 +580,7 @@
         }
       }
     },
-    "/user/block-/user/{id}": {
+    "/api/user/block-/user/{id}": {
       "put": {
         "summary": "Block User",
         "description": "Block a user by ID",
@@ -582,7 +623,7 @@
         }
       }
     },
-    "/user/unblock-/user/{id}": {
+    "/api/user/unblock-/user/{id}": {
       "put": {
         "summary": "Unblock User",
         "description": "Unblock a user by ID",
@@ -625,7 +666,7 @@
         }
       }
     },
-    "/user/refresh": {
+    "/api/user/refresh": {
       "get": {
         "summary": "Handle Refresh Token",
         "description": "Handle refresh token and generate new access token",
@@ -649,7 +690,7 @@
         }
       }
     },
-    "/user/cart": {
+    "/api/user/cart": {
       "get": {
         "summary": "Get User Cart",
         "description": "Get the cart of the authenticated user",
@@ -678,7 +719,7 @@
         }
       }
     },
-    "/empty-cart": {
+    "/api/empty-cart": {
       "delete": {
         "summary": "Empty Cart",
         "description": "Empty the cart of the authenticated user",
@@ -707,7 +748,7 @@
         }
       }
     },
-    "/user/cart/cash-order": {
+    "/api/user/cart/cash-order": {
       "post": {
         "summary": "Create Order",
         "description": "Create a new cash order for the authenticated user",
@@ -756,7 +797,7 @@
         }
       }
     },
-    "startup/rating": {
+    "/api/startup/rating": {
       "post": {
         "summary": "Create a new rating for a startup",
         "description": "Creates a new rating for a startup and updates the startup's total rating",
@@ -809,7 +850,7 @@
         }
       }
     },
-    "/rating/{id}": {
+    "/api/rating/{id}": {
       "put": {
         "summary": "Update an existing rating for a startup",
         "description": "Updates an existing rating for a startup and updates the startup's total rating",
@@ -871,6 +912,13 @@
   },
 
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
     "schemas": {
       "Admin": {
         "type": "object",
