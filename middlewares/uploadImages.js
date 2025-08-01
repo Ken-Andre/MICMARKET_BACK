@@ -4,6 +4,7 @@ const multer = require('multer');
 const Startup = require("../models/startupModel");
 const validateMongoDbId = require("../utils/validateMongodbId");
 const cloudinary = require("../utils/cloudinary");
+const express = require('express');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -16,8 +17,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-
-
 
 const uploadPhoto = async (req, res) => {
   try {
@@ -61,4 +60,8 @@ const uploadPhoto = async (req, res) => {
   }
 };
 
-module.exports = { uploadPhoto, upload };
+const router = express.Router();
+
+router.post('/upload', upload.single('image'), uploadPhoto);
+
+module.exports = { uploadPhoto, upload, router };

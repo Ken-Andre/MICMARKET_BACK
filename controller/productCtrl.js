@@ -1,5 +1,4 @@
-const Startup = require("../models/productModel");
-const Product = require("../models/startupModel");
+const Product = require("../models/productModel"); // Corrected model import
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
 
@@ -10,26 +9,12 @@ const createProduct = asyncHandler(async (req, res) => {
             req.body.slug = slugify(req.body.title);
         }
         const newProduct = await Product.create(req.body);
-        res.json(newProduct);
+        res.status(201).json(newProduct);
     } catch (error) {
-        throw new Error(error);
+        res.status(500).json({ message: error.message });
     }
 
 });
-
-// Create a startup
-// const createStartup = asyncHandler(async (req, res) => {
-//     try {
-//         if (req.body.title) {
-//             req.body.slug = slugify(req.body.title);
-//         }
-//         const newStartup = await Startup.create(req.body);
-//         res.json(newStartup);
-//     } catch (error) {
-//         throw new Error(error);
-//     }
-
-// });
 
 //Update a product
 const updateProduct = asyncHandler(async (req, res) => {
@@ -85,22 +70,10 @@ const getaProduct = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     try {
-        const findProduct = await Product.findById(id);
-        res.json(findProduct);
+        const product = await Product.findById(id);
+        res.json(product);
     } catch (error) {
-        throw new Error(error);
-    }
-});
-
-//Get a startup
-const getaStartup = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        const findStartup = await Startup.findById(id);
-        res.json(findStartup);
-    } catch (error) {
-        throw new Error(error);
+        res.status(500).json({ message: error.message });
     }
 });
 
@@ -160,6 +133,4 @@ module.exports = {
     getAllProduct,
     updateProduct,
     deleteProduct,
-    // createStartup,
-    // getaStartup,
 };

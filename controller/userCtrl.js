@@ -15,16 +15,31 @@ const sendEmail = require("./emailCtrl");
 const replaceLocalhostWithIpAddress = require("../utils/getIp");
 //Create a User
 const createUser = asyncHandler(async (req, res) => {
-  const email = req.body.email;
-  const findUser = await User.findOne({ email: email });
-  if (!findUser) {
-    //Creates a new User
+  const { email, password, firstname, lastname, mobile, role } = req.body;
+
+  // Validate request body
+  if (!email || !password || !firstname || !lastname || !mobile || !role) {
+    return res.status(400).json({ message: "All fields are required: email, password, firstname, lastname, mobile, and role." });
+  }
+
+  try {
+    // Check if email or mobile already exists
+    const findUserByEmail = await User.findOne({ email });
+    const findUserByMobile = await User.findOne({ mobile });
+
+    if (findUserByEmail) {
+      return res.status(409).json({ message: "User with this email already exists." });
+    }
+
+    if (findUserByMobile) {
+      return res.status(409).json({ message: "User with this mobile number already exists." });
+    }
+
+    // Creates a new User
     const newUser = await User.create(req.body);
-    res.json(newUser);
-  } else {
-    // User already exists
-    res.sendStatus(409);
-    throw new Error("User Already Exists");
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -33,15 +48,19 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   // Checks if all parameters are filled
   if (!email || !password) {
-    res
-      .status(400)
-      .json({ message: "The email or password path fields is empty" });
+    return res.status(400).json({ message: "The email or password path fields is empty" });
   }
   console.log(email, password);
   // check if user exists or not
   const findUser = await User.findOne({ email });
-if (!findUser) throw new Error("User not found");
-if (findUser.role !== "user") throw new Error("Not Authorised here !");
+  if (!findUser) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  if (findUser.role !== "user") {
+    return res.status(403).json({ message: "Not Authorised here!" });
+  }
+
   if (findUser && (await findUser.isPasswordMatched(password))) {
     const refreshToken = await generateRefreshToken(findUser?._id);
     const updatedUser = await User.findByIdAndUpdate(

@@ -81,7 +81,7 @@ app.use((req, res, next) => {
   }
   next();
 });
-// app.use(corsMiddleware);
+app.use(corsMiddleware);
 // app.use((req, res, next) => {
 //   const allowedOrigins = [
 //     '*', // Allow all origins for testing
