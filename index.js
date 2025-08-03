@@ -18,6 +18,7 @@ const corsMiddleware = require("./middlewares/corsMiddleware");
 // const app = express();
 const swaggerUI = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
+const axios = require("axios");
 // const swaggerJsDoc = require("swagger-jsdoc");
 dbConnect();
 
@@ -141,13 +142,32 @@ app.use("/api/enquiry", enqRouter);
 app.get('/', (req, res) => {
   res.json({ message: 'MicMarket API is running' });
 });
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    message: 'API is working well',
-    timestamp: new Date().toISOString(),
-  });
+
+app.get('/api/health', async (req, res) => {
+  try {
+    const ipResponse = await axios.get('https://api.ipify.org?format=json');
+    const ip = ipResponse.data.ip;
+
+    const cidr = `${ip}/32`;
+
+    res.status(200).json({
+      status: 'success',
+      message: 'API is working well',
+      timestamp: new Date().toISOString(),
+      server_ip: ip,
+      cidr: cidr,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to retrieve server IP',
+      error: error.message,
+    });
+
+  }
 });
+
+
 
 app.get("/swagger.json", (req, res) => {
   res.setHeader("Content-Type", "application/json");

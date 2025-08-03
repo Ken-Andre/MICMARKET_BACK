@@ -50,6 +50,14 @@
                     "timestamp": {
                       "type": "string",
                       "example": "2025-08-01T12:00:00.000Z"
+                    },
+                    "server_ip": {
+                      "type": "string",
+                      "example": "0.0.0.0"
+                    },
+                    "cidr": {
+                      "type": "string",
+                      "example": "0.0.0.0/0"
                     }
                   }
                 }
