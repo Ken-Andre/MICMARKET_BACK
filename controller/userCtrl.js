@@ -71,6 +71,7 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       sameSite: "none",
+      secure: true,
       maxAge: 72 * 60 * 60 * 1000,
     });
     //passwords is correct
@@ -108,6 +109,8 @@ const loginStartup = asyncHandler(async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       maxAge: 32 * 60 * 60 * 1000,
+      sameSite: "none",
+      secure: true,
     });
     res.json({
       _id: findStartup?._id,
@@ -142,6 +145,8 @@ const loginAdmin = asyncHandler(async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       maxAge: 48 * 60 * 60 * 1000,
+      sameSite: "none",
+      secure: true,
     });
     res.json({
       _id: findAdmin?._id,
@@ -458,18 +463,23 @@ const logout = asyncHandler(async (req, res) => {
   const refreshToken = cookie.refreshToken;
   const user = await User.findOne({ refreshToken });
   if (!user) {
-    res.clearCookie("refreshToken", refreshToken, {
+    res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: true,
+      sameSite: "none",
     });
     return res.sendStatus(204); // forbidden
   }
-  await User.findOneAndUpdate(refreshToken, {
-    refreshToken: "",
-  });
-  res.clearCookie("refreshToken", refreshToken, {
+  await User.findOneAndUpdate(
+    { refreshToken: refreshToken },
+    {
+      refreshToken: "",
+    }
+  );
+  res.clearCookie("refreshToken", {
     httpOnly: true,
     secure: true,
+    sameSite: "none",
   });
   return res.sendStatus(204); // forbidden
 });
