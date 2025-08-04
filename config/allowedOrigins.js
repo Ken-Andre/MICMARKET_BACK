@@ -3,6 +3,8 @@ const allowedOrigins = [
     'https://localhost:4000',
     'http://localhost:3000',
     'https://micmarket-back.vercel.app',
+    'https://micmarket-front.vercel.app',
+    'https://micmarket-admin.vercel.app',
     'http://localhost:5000',
     'http://localhost:3000',
     'http://localhost:3001',
@@ -14,6 +16,10 @@ const allowedOrigins = [
     
     '127.0.0.1',
     '10.0.3.210',
+    '51.137.3.17',
+    '64.29.17.3',
+    '216.198.79.3',
+    
 ];
 
 module.exports = allowedOrigins;
