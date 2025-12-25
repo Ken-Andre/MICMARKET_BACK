@@ -3,8 +3,8 @@ const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
 const validateMongoDbId = require("../utils/validateMongodbId");
-const  {cloudinary}  = require("../utils/cloudinary");
-const fs = require("fs");
+const { cloudinary, uploadBuffer } = require("../utils/cloudinary");
+
 // Create startup function here
 const createStartup = asyncHandler(async (req, res) => {
   try {
@@ -145,21 +145,6 @@ const blockStartup = asyncHandler(async (req, res) => {
   }
 });
 
-// Unblock user
-// Preuve d'identité
-// Preuve d'identité d'un utilisateur associé à ce compte
-
-// Informations de contact
-
-// Compte Google My Business vérifié et synchronisé
-
-// Propriété du nom de domaine enregistré
-
-// Nom de domaine vérifié dans la base de données d'un tiers
-
-// Compte bancaire
-
-// Compte bancaire enregistré lors de la procédure d'abonnement
 const unblockStartup = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDbId(id);
@@ -181,8 +166,6 @@ const unblockStartup = asyncHandler(async (req, res) => {
   }
 });
 
-// prodId ici designe l'id de la startup en question a la place de startupId
-// En params on entrera a cette url: "{{base_url}}startup/rating", {"star":0,"prodId":"123456","comment":"your comment"}
 const rating = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const {  star, prodId, comment } = req.body;
@@ -280,32 +263,28 @@ const getStartupRatingStats = asyncHandler(async (req, res) => {
 
 
 
+
 // Middleware de téléchargement d'image sur Cloudinary
 const uploadImages = async (req, res, next) => {
   try {
-    if (!req.file) {
+    if (!req.file || !req.file.buffer) {
       throw new Error('Veuillez sélectionner une image à télécharger.');
     }
 
-    // Télécharger l'image sur Cloudinary
-    const uploadedImage = await cloudinary.uploader.upload(req.file.path);
+    const uploadedImage = await uploadBuffer(req.file.buffer);
 
-    // Mettre à jour le modèle de démarrage avec les informations d'image téléchargées
     const startup = await Startup.findByIdAndUpdate(
       req.params.id,
       {
         $push: {
           images: {
             public_id: uploadedImage.public_id,
-            url: uploadedImage.secure_url,
+            url: uploadedImage.url,
           },
         },
       },
       { new: true }
     );
-
-    // Supprimer l'image téléchargée localement
-    fs.unlinkSync(req.file.path);
 
     res.json(startup);
   } catch (error) {
