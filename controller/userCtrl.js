@@ -50,7 +50,7 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
   if (!email || !password) {
     return res.status(400).json({ message: "The email or password path fields is empty" });
   }
-  console.log(email, password);
+  console.log("Login attempt for email:", email);
   // check if user exists or not
   const findUser = await User.findOne({ email });
   if (!findUser) {
