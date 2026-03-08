@@ -188,13 +188,13 @@ const rating = asyncHandler(async (req, res) => {
   const {  star, prodId, comment } = req.body;
   try {
     const startup = await Startup.findById(prodId);
-    if (startup.ratings.some((rating) => !rating.postedBy)) {
+    if (startup.ratings.some((rating) => !rating.postedby)) {
       // handle the case where one of the elements in the startup.ratings array doesn't have a postedBy property
-      console.log("Something here  rating haven't the postedBy");
+      console.log("Found ratings missing the postedby property. Skipping them.");
     }
 
     let alreadyRated = startup.ratings.find(
-      (userId) => userId.postedby.toString() === _id.toString()
+      (userId) => userId.postedby && userId.postedby.toString() === _id.toString()
     );
     if (alreadyRated) {
       const updateRating = await Startup.updateOne(
